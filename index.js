@@ -37,6 +37,10 @@ module.exports = async function(req, res) {
         break;
     }
   } catch (err) {
-    send(res, 500, err);
+    if (process.env.NODE_ENV !== 'production' && err.stack) {
+      console.error(err.stack);
+    }
+
+    send(res, err.statusCode || 500, { error: true, message: err.message });
   }
 };

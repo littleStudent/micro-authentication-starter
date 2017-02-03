@@ -8,22 +8,6 @@ const { secret } = require('../config');
 const User = require('../models/user');
 
 /**
- * Catch errors from the wrapped function.
- * If any errors are catched, a JSON response is generated for that error.
- */
-const handleErrors = fn => async (req, res) => {
-  try {
-    return await fn(req, res);
-  } catch (err) {
-    if (process.env.NODE_ENV !== 'production' && err.stack) {
-      console.error(err.stack);
-    }
-
-    send(res, err.statusCode || 500, { error: true, message: err.message });
-  }
-};
-
-/**
  * Attempt to authenticate a user.
  */
 const attempt = (username, password) => {
@@ -43,22 +27,14 @@ const attempt = (username, password) => {
 /**
  * Authenticate a user and generate a JWT if successful.
  */
-const auth = ({ username, password }) => {
-  console.log(username);
-  return attempt(username, password).then(({ id }) => {
+const auth = ({ username, password }) =>
+  attempt(username, password).then(({ id }) => {
     let token = sign(id, secret);
     return { token: token };
   });
-};
 
-const decode = token => {
-  return verify(token, secret);
-};
+const decode = token => verify(token, secret);
 
-module.exports.login = handleErrors(
-  async (req, res) => await auth(await json(req))
-);
+module.exports.login = async (req, res) => await auth(await json(req));
 
-module.exports.decode = handleErrors(
-  (req, res) => decode(req.headers['authorization'])
-);
+module.exports.decode = (req, res) => decode(req.headers['authorization']);

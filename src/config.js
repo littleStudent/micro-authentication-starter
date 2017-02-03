@@ -1,4 +1,1 @@
-module.exports = {
-  secret: 'ilovescotchyscotch',
-  database: process.env.MONGODB
-};
+module.exports = { secret: process.env.SECRET, database: process.env.MONGODB };
