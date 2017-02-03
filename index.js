@@ -21,6 +21,10 @@ module.exports = async function(req, res) {
   }
   try {
     switch (req.url) {
+      case '/api/setup':
+        send(res, 200, await users.setup());
+        break;
+
       case '/api/authentication':
         return auth.login(req, res);
 
