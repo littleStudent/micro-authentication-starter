@@ -35,6 +35,8 @@ const auth = ({ username, password }) =>
 
 const decode = token => verify(token, secret);
 
-module.exports.login = async (req, res) => await auth(await json(req));
+module.exports.login = async (req, res) => {
+  await auth(await json(req));
+}
 
 module.exports.decode = (req, res) => decode(req.headers['authorization']);
